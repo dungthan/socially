@@ -6,10 +6,35 @@ import './partyDetails.html';
 import { Parties } from '../../../api/parties';
 
 class PartiesDetail {
-	constructor($stateParams) {
+	constructor($stateParams, $scope, $reactive) {
 		'ngInject';
 
-		this.partyId = $stateParams.partyId;
+		$reactive(this).attach($scope);
+
+		this.helpers({
+			party() {
+				return Parties.findOne({
+					_id: $stateParams.partyId
+				});
+			}
+		});
+	}
+
+	save() {
+		Parties.update({
+			_id: this.party._id
+		}, {
+			$set: {
+				name: this.party.name,
+				description: this.party.description,
+			}
+		}, (error) => {
+			if (error) {
+				console.log('Unable to update the party.');
+			} else {
+				console.log('Done!');
+			}
+		});
 	}
 }
 
