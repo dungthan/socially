@@ -3,6 +3,7 @@ import angularMeteor from 'angular-meteor';
 
 import './partyAdd.html';
 import { Parties } from '../../../api/parties';
+import { Meteor } from 'meteor/meteor';
 
 class PartyAdd {
 	constructor() {
@@ -10,6 +11,7 @@ class PartyAdd {
 	}
 
 	submit() {
+		this.party.owner = Meteor.user()._id;
 		Parties.insert(this.party);
 		this.reset();
 	}

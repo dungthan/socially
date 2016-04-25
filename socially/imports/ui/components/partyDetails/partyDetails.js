@@ -11,6 +11,8 @@ class PartiesDetail {
 
 		$reactive(this).attach($scope);
 
+		this.subscribe('parties');
+
 		this.helpers({
 			party() {
 				return Parties.findOne({
@@ -47,13 +49,34 @@ export default angular.module(name, [
 	templateUrl: `imports/ui/components/${name}/${name}.html`,
 	controllerAs: name,
 	controller: PartiesDetail
-}).config(config);
+}).config(config).run(run);
 
 function config($stateProvider) {
 	'ngInject';
 
 	$stateProvider.state('partyDetails', {
 		url: '/parties/:partyId',
-		template: '<party-details></party-details>'
+		template: '<party-details></party-details>',
+		resolve: {
+			currentUser($q) {
+				if (Meteor.userId() === null) {
+					return $q.reject('AUTH_REQUIRED');
+				} else {
+					return $q.resolve();
+				}
+			}
+		}
 	});
+}
+
+function run($rootScope, $state) {
+	'ngInject';
+
+	$rootScope.$on('$stateChangeErroe', 
+		(event, toState, toParams, fromState, fromParams, error) => {
+			if (error === 'AUTH_REQUIRED') {
+				$state.$go('parties');
+			}
+		}
+	)
 }
