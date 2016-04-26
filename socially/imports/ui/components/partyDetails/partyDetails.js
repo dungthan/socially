@@ -1,6 +1,7 @@
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import uiRouter from 'angular-ui-router';
+import { Meteor } from 'meteor/meteor';
 
 import './partyDetails.html';
 import { Parties } from '../../../api/parties';
@@ -12,12 +13,16 @@ class PartiesDetail {
 		$reactive(this).attach($scope);
 
 		this.subscribe('parties');
+		this.subscribe('users');
 
 		this.helpers({
 			party() {
 				return Parties.findOne({
 					_id: $stateParams.partyId
 				});
+			},
+			users() {
+				return Meteor.users.find({});
 			}
 		});
 	}

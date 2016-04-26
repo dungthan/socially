@@ -2,7 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Parties } from './collection';
 
 if (Meteor.isServer) {
-	Meteor.publish('parties', function () {
+	Meteor.publish('parties', function (options) {
 		const selector = {
 			$or : [{
 				$and: [{
@@ -23,6 +23,6 @@ if (Meteor.isServer) {
 			}]
 		};
 
-		return Parties.find(selector);
+		return Parties.find(selector, options);
 	});
 }
